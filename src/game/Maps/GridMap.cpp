@@ -763,7 +763,9 @@ int TerrainInfo::RefGrid(const uint32& x, const uint32& y)
     MANGOS_ASSERT(y < MAX_NUMBER_OF_GRIDS);
 
     LOCK_GUARD _lock(m_refMutex);
-    return (m_GridRef[x][y] += 1);
+    if (_lock.locked())
+      return (m_GridRef[x][y] += 1);
+    return 0;
 }
 
 int TerrainInfo::UnrefGrid(const uint32& x, const uint32& y)
@@ -774,9 +776,11 @@ int TerrainInfo::UnrefGrid(const uint32& x, const uint32& y)
     int16& iRef = m_GridRef[x][y];
 
     LOCK_GUARD _lock(m_refMutex);
-    if (iRef > 0)
-        return (iRef -= 1);
-
+    if (_lock.locked())
+    {
+        if (iRef > 0)
+            return (iRef -= 1);
+    }
     return 0;
 }
 
@@ -1120,6 +1124,9 @@ GridMap* TerrainInfo::LoadMapAndVMap(const uint32 x, const uint32 y)
     if (!m_GridMaps[x][y])
     {
         LOCK_GUARD lock(m_mutex);
+
+        if (!lock.locked())
+            return NULL;
 
         if (!m_GridMaps[x][y])
         {

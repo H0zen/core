@@ -133,7 +133,7 @@ bool MMapManager::loadMap(uint32 mapId, int32 x, int32 y)
 
     // check if we already have this tile loaded
     uint32 packedGridPos = packTileID(x, y);
-    ACE_Guard<ACE_Thread_Mutex> guard(mmap->tilesLoading_lock);
+    ACE_GUARD_RETURN (ACE_Thread_Mutex, guard, mmap->tilesLoading_lock, false);
     if (mmap->mmapLoadedTiles.find(packedGridPos) != mmap->mmapLoadedTiles.end())
         return false;
 
@@ -425,7 +425,7 @@ dtNavMeshQuery const* MMapManager::GetModelNavMeshQuery(uint32 displayId)
     MMapData* mmap = loadedModels[displayId];
     if (mmap->navMeshQueries.find(tid) == mmap->navMeshQueries.end())
     {
-        ACE_Guard<ACE_Thread_Mutex> g(lockForModels);
+        ACE_GUARD_RETURN (ACE_Thread_Mutex, g, lockForModels, NULL);
         if (mmap->navMeshQueries.find(tid) == mmap->navMeshQueries.end())
         {
             // allocate mesh query

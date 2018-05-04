@@ -39,14 +39,10 @@ namespace ACE_Based
         //! Storage backing the queue.
         StorageType _queue;
 
-        //! Cancellation flag.
-        /*volatile*/ bool _canceled;
-
         public:
 
             //! Create a LockedQueue.
-            LockedQueue()
-                : _canceled(false)
+            LockedQueue() : _lock(), _queue()
             {
             }
 
@@ -58,7 +54,7 @@ namespace ACE_Based
             //! Adds an item to the queue.
             void add(const T& item)
             {
-                ACE_Guard<LockType> g(this->_lock);
+                ACE_GUARD (LockType, g, this->_lock);
                 _queue.push_back(item);
             }
 
@@ -92,50 +88,15 @@ namespace ACE_Based
                 return true;
             }
 
-            //! Peeks at the top of the queue. Remember to unlock after use.
-            T& peek()
-            {
-                lock();
-
-                T& result = _queue.front();
-
-                return result;
-            }
-
-            //! Cancels the queue.
-            void cancel()
-            {
-                ACE_Guard<LockType> g(this->_lock);
-                _canceled = true;
-            }
-
-            //! Checks if the queue is cancelled.
-            bool cancelled()
-            {
-                ACE_Guard<LockType> g(this->_lock);
-                return _canceled;
-            }
-
-            //! Locks the queue for access.
-            void lock()
-            {
-                this->_lock.acquire();
-            }
-
-            //! Unlocks the queue.
-            void unlock()
-            {
-                this->_lock.release();
-            }
-
             bool empty_unsafe()
             {
                 return _queue.empty();
             }
+
             ///! Checks if we're empty or not with locks held
             bool empty()
             {
-                ACE_Guard<LockType> g(this->_lock);
+                ACE_GUARD_RETURN (LockType, g, this->_lock, false);
                 return _queue.empty();
             }
     };

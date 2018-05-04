@@ -20,22 +20,16 @@ project(MaNGOS)
 # CMake policies
 cmake_minimum_required(VERSION 3.0)
 
-# CMake policies (can not be handled elsewhere)
-cmake_policy(SET CMP0026 OLD)
-if(POLICY CMP0043)
-  cmake_policy(SET CMP0043 OLD) # Disable 'Ignore COMPILE_DEFINITIONS_<Config> properties'
-endif()
-
 set(CMAKE_MODULE_PATH
   ${CMAKE_MODULE_PATH}
   ${CMAKE_SOURCE_DIR}/cmake
 )
 
 option(DEBUG "Debug mode" 0)
-option(USE_STD_MALLOC "Use standard malloc instead of TBB" 0)
+option(USE_STD_MALLOC "Use standard malloc instead of TBB" 1)
 option(TBB_DEBUG "Use TBB debug librairies" 0)
 option(USE_ANTICHEAT "Use anticheat" 0)
-option(SCRIPTS "Compile scripts" 1)
+option(SCRIPTS "Compile scripts" 0)
 option(USE_EXTRACTORS "Compile extractors" 0)
 option(USE_LIBCURL "Compile with libcurl for email support" 0)
 

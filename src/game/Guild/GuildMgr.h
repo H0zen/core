@@ -47,17 +47,17 @@ class GuildMgr
 
         void GuildMemberAdded(uint32 guildId, uint32 memberGuid)
         {
-            ACE_Guard<ACE_Thread_Mutex> guard(m_guid2GuildMutex);
+            ACE_GUARD (ACE_Thread_Mutex, guard, m_guid2GuildMutex)
             m_guid2guild[memberGuid] = guildId;
         }
         void GuildMemberRemoved(uint32 memberGuid)
         {
-            ACE_Guard<ACE_Thread_Mutex> guard(m_guid2GuildMutex);
+            ACE_GUARD (ACE_Thread_Mutex, guard, m_guid2GuildMutex)
             m_guid2guild.erase(memberGuid);
         }
         Guild* GetPlayerGuild(uint32 lowguid)
         {
-            ACE_Guard<ACE_Thread_Mutex> guard(m_guid2GuildMutex);
+            ACE_GUARD_RETURN (ACE_Thread_Mutex, guard, m_guid2GuildMutex, NULL)
             std::map<uint32, uint32>::iterator it = m_guid2guild.find(lowguid);
             if (it != m_guid2guild.end())
                 return GetGuildById(it->second);

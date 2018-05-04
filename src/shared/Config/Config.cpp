@@ -29,6 +29,8 @@ INSTANTIATE_SINGLETON_1(Config);
 bool Config::GetValueHelper(const char* name, ACE_TString &result)
 {
     GuardType guard(m_configLock);
+    if (!guard.locked())
+        return false;
 
     if (!mConf)
         return false;

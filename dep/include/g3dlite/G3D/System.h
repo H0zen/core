@@ -24,6 +24,10 @@
 #   include <CoreServices/CoreServices.h>
 #endif
 
+#if defined(__FreeBSD__)
+    #include <sys/_timeval.h>
+#endif
+
 namespace G3D {
 
 /**
@@ -115,7 +119,7 @@ private:
     std::string    m_cpuArch;
     std::string    m_operatingSystem;
 
-#   ifdef G3D_WIN32
+#ifdef G3D_WIN32
     /** Used by getTick() for timing */
     LARGE_INTEGER  m_start;
     LARGE_INTEGER  m_counterFrequency;
