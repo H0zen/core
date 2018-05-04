@@ -25,6 +25,8 @@
 #include <unordered_map>
 #include <unordered_set>
 
+#include "Platform/Define.h"
+
 #define UNORDERED_MAP std::unordered_map
 #define UNORDERED_SET std::unordered_set
 #define HASH_NAMESPACE_START namespace std {
